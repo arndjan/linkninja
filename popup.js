@@ -14,7 +14,7 @@ const DEFAULT_PRESETS = {
   'bbc.com': '/news/',
   'bbc.co.uk': '/news/',
   'medium.com': '/@/',
-  'substack.com': '/p/',
+  'substack.com': '/\\/p\\/[a-z]/',
 };
 
 let presets = {};
@@ -159,6 +159,7 @@ async function extractLinks(useFilter) {
   const status = document.getElementById('status');
   const format = document.getElementById('format').value;
   const filterInput = document.getElementById('filter').value.trim();
+  const sameDomain = document.getElementById('sameDomain').checked;
 
   status.textContent = 'Extracting...';
 
@@ -168,7 +169,7 @@ async function extractLinks(useFilter) {
     const [result] = await chrome.scripting.executeScript({
       target: { tabId: tab.id },
       func: extractFromPage,
-      args: [useFilter ? filterInput : null]
+      args: [useFilter ? filterInput : null, sameDomain]
     });
 
     const links = result.result;
@@ -220,7 +221,7 @@ async function extractLinks(useFilter) {
   }
 }
 
-function extractFromPage(filterPattern) {
+function extractFromPage(filterPattern, sameDomain) {
   // Skip these URL patterns
   const skipPatterns = [
     /\.(jpg|jpeg|png|gif|webp|svg|ico|pdf|mp4|mp3)(\?|$)/i,
@@ -228,6 +229,9 @@ function extractFromPage(filterPattern) {
     /^mailto:/,
     /^tel:/,
   ];
+
+  // Get current page domain for same-domain filtering
+  const currentDomain = window.location.hostname;
 
   // Parse filter: /regex/ or plain prefix
   let filterFn = null;
@@ -266,6 +270,16 @@ function extractFromPage(filterPattern) {
 
     // Skip current page
     if (baseUrl === window.location.href.split('#')[0]) continue;
+
+    // Same domain filter
+    if (sameDomain) {
+      try {
+        const linkDomain = new URL(baseUrl).hostname;
+        if (linkDomain !== currentDomain) continue;
+      } catch (e) {
+        continue;
+      }
+    }
 
     // Get clean title
     let title = link.textContent.trim().replace(/\s+/g, ' ');
