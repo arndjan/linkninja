@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "Article Link Extractor",
+  "version": "1.2",
+  "description": "Extract article links from any page and save to file",
+  "permissions": ["activeTab", "scripting", "downloads", "storage"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "icon.png",
+    "default_title": "Extract Links"
+  },
+  "icons": {
+    "48": "icon.png"
+  }
+}

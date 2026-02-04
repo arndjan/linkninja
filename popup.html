@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      width: 320px;
+      padding: 12px;
+      font-family: system-ui, sans-serif;
+      font-size: 14px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      font-size: 14px;
+      cursor: pointer;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+    button:hover { background: #45a049; }
+    button.secondary { background: #2196F3; }
+    button.secondary:hover { background: #1976D2; }
+    button.small {
+      width: auto;
+      padding: 6px 12px;
+      font-size: 12px;
+      background: #757575;
+    }
+    button.small:hover { background: #616161; }
+    button.danger { background: #f44336; }
+    button.danger:hover { background: #d32f2f; }
+    label {
+      display: block;
+      margin: 10px 0 4px;
+      font-weight: 500;
+      font-size: 13px;
+    }
+    select, input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      font-size: 13px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+    input[type="text"] {
+      font-family: monospace;
+    }
+    .hint {
+      font-size: 11px;
+      color: #888;
+      margin: 4px 0 8px;
+    }
+    #status {
+      color: #666;
+      font-size: 12px;
+      margin-top: 10px;
+    }
+    .preset-info {
+      background: #e8f5e9;
+      padding: 6px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      margin-bottom: 10px;
+      color: #2e7d32;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .header h3 { margin: 0; font-size: 14px; }
+
+    /* Settings view */
+    #settingsView { display: none; }
+    .preset-list {
+      max-height: 200px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+    .preset-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px;
+      border-bottom: 1px solid #eee;
+      font-size: 12px;
+    }
+    .preset-item:last-child { border-bottom: none; }
+    .preset-item .domain { font-weight: 500; }
+    .preset-item .filter { color: #666; font-family: monospace; font-size: 11px; }
+    .preset-item button {
+      width: auto;
+      padding: 4px 8px;
+      font-size: 11px;
+      margin: 0 0 0 4px;
+    }
+    .add-preset {
+      background: #f5f5f5;
+      padding: 10px;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+    .add-preset input {
+      margin-bottom: 6px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Main View -->
+  <div id="mainView">
+    <div class="header">
+      <h3>Link Extractor</h3>
+      <button class="small" id="openSettings">⚙️ Presets</button>
+    </div>
+
+    <div id="presetInfo" class="preset-info" style="display:none;">
+      <span id="presetText"></span>
+      <button class="small" id="savePreset" style="display:none;">Save</button>
+    </div>
+
+    <label>Filter:</label>
+    <input type="text" id="filter" placeholder="/nieuws/ or /\/artikel\/\d+/">
+    <div class="hint">Substring match or /regex/</div>
+
+    <label>Format:</label>
+    <select id="format">
+      <option value="urls">URLs only (.txt)</option>
+      <option value="markdown">Markdown (.md)</option>
+      <option value="json">JSON (.json)</option>
+    </select>
+
+    <button id="extract">Extract Matching Links</button>
+    <button id="extractAll" class="secondary">Extract ALL Links</button>
+
+    <div id="status"></div>
+  </div>
+
+  <!-- Settings View -->
+  <div id="settingsView">
+    <div class="header">
+      <h3>Manage Presets</h3>
+      <button class="small" id="closeSettings">← Back</button>
+    </div>
+
+    <div class="add-preset">
+      <input type="text" id="newDomain" placeholder="Domain (e.g., example.com)">
+      <input type="text" id="newFilter" placeholder="Filter (e.g., /articles/)">
+      <button class="small" id="addPreset" style="width:100%;">+ Add Preset</button>
+    </div>
+
+    <div class="preset-list" id="presetList"></div>
+
+    <button class="small" id="resetDefaults" style="width:100%;">Reset to Defaults</button>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
